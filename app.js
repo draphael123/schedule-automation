@@ -959,6 +959,52 @@ ${providerLines}
 // INITIALIZATION
 // ═══════════════════════════════════════════════════════════════════════════
 
+function initDashboard() {
+  const cycle = getScheduleCycle();
+  const progress = ((cycle.daysIntoCycle + 1) / 14) * 100;
+
+  // Update cycle period
+  const cyclePeriod = document.getElementById('dashCyclePeriod');
+  if (cyclePeriod) {
+    cyclePeriod.textContent = formatDateRange(cycle.cycleStart, cycle.cycleEnd);
+  }
+
+  // Update next reminder
+  const nextReminder = document.getElementById('dashNextReminder');
+  if (nextReminder) {
+    const now = new Date();
+    if (now < cycle.reminderDate) {
+      nextReminder.textContent = formatDate(cycle.reminderDate, 'full');
+    } else {
+      nextReminder.textContent = formatDate(cycle.nextReminderDate, 'full');
+    }
+  }
+
+  // Update deadline
+  const deadline = document.getElementById('dashDeadline');
+  if (deadline) {
+    deadline.textContent = formatDate(cycle.escalationDate, 'full');
+  }
+
+  // Update day number
+  const dayNum = document.getElementById('dashDayNum');
+  if (dayNum) {
+    dayNum.textContent = cycle.daysIntoCycle + 1;
+  }
+
+  // Update progress percent
+  const progressPercent = document.getElementById('dashProgressPercent');
+  if (progressPercent) {
+    progressPercent.textContent = `${Math.round(progress)}%`;
+  }
+
+  // Update progress bar fill
+  const progressFill = document.getElementById('dashProgressFill');
+  if (progressFill) {
+    progressFill.style.width = `${progress}%`;
+  }
+}
+
 function init() {
   // Core functionality
   renderTable(providers);
@@ -966,6 +1012,7 @@ function init() {
   updateProviderCount();
   renderPromptDisplay();
   fetchProviderStatuses();
+  initDashboard();
 
   // Enhanced features
   initScrollReveal();
