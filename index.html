@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Provider Schedule Automation | Fountain</title>
+
+  <!-- Meta tags for SEO -->
+  <meta name="description" content="Internal scheduling operations tool for Fountain. Automates provider schedule collection, reminders, and tracking for 18 team members." />
+  <meta name="author" content="Fountain" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Open Graph tags -->
+  <meta property="og:title" content="Provider Schedule Automation | Fountain" />
+  <meta property="og:description" content="Internal scheduling operations tool for Fountain. Automates provider schedule collection, reminders, and tracking." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- Particle Background Canvas -->
+<canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+<!-- Gradient Mesh Background -->
+<div class="gradient-bg" aria-hidden="true">
+  <div class="gradient-orb gradient-orb-1"></div>
+  <div class="gradient-orb gradient-orb-2"></div>
+  <div class="gradient-orb gradient-orb-3"></div>
+</div>
+
+<!-- Skip to Content (Accessibility) -->
+<a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+<!-- Theme Toggle Button -->
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode" title="Toggle theme (T)">
+  <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+  <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+</button>
+
+<!-- NAV -->
+<nav role="navigation" aria-label="Main navigation">
+  <a class="nav-brand" href="#" aria-label="Schedule Automation Home">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Schedule Automation
+  </a>
+  <div class="nav-links" role="menubar">
+    <a href="#quick-start" role="menuitem">Quick Start</a>
+    <a href="#how-it-works" role="menuitem">How It Works</a>
+    <a href="#tools" role="menuitem">Tools</a>
+    <a href="#providers" role="menuitem">Providers</a>
+    <a href="#templates" role="menuitem">Templates</a>
+    <a href="#roadmap" role="menuitem">Roadmap</a>
+    <a href="#faq" role="menuitem">FAQ</a>
+    <a href="#for-providers" role="menuitem">For Providers</a>
+    <a href="#admin" role="menuitem">Admin</a>
+  </div>
+  <button class="nav-hamburger" onclick="toggleMobileNav()" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <span class="nav-badge">v2.2</span>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="nav-mobile-menu" id="mobileMenu" role="menu" aria-label="Mobile navigation">
+  <a href="#quick-start" role="menuitem">Quick Start</a>
+  <a href="#how-it-works" role="menuitem">How It Works</a>
+  <a href="#tools" role="menuitem">Tools</a>
+  <a href="#providers" role="menuitem">Providers</a>
+  <a href="#templates" role="menuitem">Templates</a>
+  <a href="#roadmap" role="menuitem">Roadmap</a>
+  <a href="#faq" role="menuitem">FAQ</a>
+  <a href="#for-providers" role="menuitem">For Providers</a>
+  <a href="#admin" role="menuitem">Admin</a>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eyebrow">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Fountain Internal Tool
+  </div>
+  <h1>Provider Schedule Automation</h1>
+  <p>A streamlined system to audit, remind, and track provider schedule submissions — no manual inbox-digging required.</p>
+
+  <!-- Countdown Timer -->
+  <div class="countdown-container glass-card" id="countdownContainer">
+    <div class="countdown-label">Next Reminder In</div>
+    <div class="countdown-timer" id="countdownTimer">
+      <div class="countdown-unit">
+        <span class="countdown-value" id="countdownDays">--</span>
+        <span class="countdown-text">Days</span>
+      </div>
+      <div class="countdown-unit">
+        <span class="countdown-value" id="countdownHours">--</span>
+        <span class="countdown-text">Hours</span>
+      </div>
+      <div class="countdown-unit">
+        <span class="countdown-value" id="countdownMinutes">--</span>
+        <span class="countdown-text">Minutes</span>
+      </div>
+      <div class="countdown-unit">
+        <span class="countdown-value" id="countdownSeconds">--</span>
+        <span class="countdown-text">Seconds</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-container" id="progressContainer">
+    <div class="progress-label">
+      <span>Cycle Progress</span>
+      <span id="progressPercent">0%</span>
+    </div>
+    <div class="progress-bar-wrapper">
+      <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+    <div class="progress-dates">
+      <span id="progressStart">--</span>
+      <span id="progressEnd">--</span>
+    </div>
+  </div>
+
+  <div class="hero-stats" role="list">
+    <div class="stat glass-card" role="listitem">
+      <div class="stat-num animated-stat" data-target="18" id="heroProviderCount">0</div>
+      <div class="stat-label">Providers</div>
+    </div>
+    <div class="stat glass-card" role="listitem">
+      <div class="stat-num animated-stat" data-target="14" data-suffix="d">0</div>
+      <div class="stat-label">Audit Window</div>
+    </div>
+    <div class="stat glass-card" role="listitem">
+      <div class="stat-num animated-stat" data-target="3">0</div>
+      <div class="stat-label">Email Templates</div>
+    </div>
+    <div class="stat glass-card" role="listitem">
+      <div class="stat-num">Auto</div>
+      <div class="stat-label">Follow-ups</div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main id="main-content">
+
+<!-- QUICK START -->
+<section id="quick-start" class="quick-start-section reveal" aria-labelledby="quick-start-heading">
+  <div class="section-header">
+    <span class="section-badge">TL;DR</span>
+    <h2 id="quick-start-heading">Quick Start</h2>
+    <p>Running the schedule collection process today? Here's what you need to do.</p>
+  </div>
+
+  <div class="quick-start-grid">
+    <div class="quick-start-step glass-card">
+      <div class="quick-start-num">1</div>
+      <div class="quick-start-content">
+        <h3>Run the Audit</h3>
+        <p>Copy the <a href="#tools">audit prompt</a> and paste it into Gemini with Gmail access. It will tell you who hasn't submitted.</p>
+        <span class="quick-start-time">~2 min</span>
+      </div>
+    </div>
+
+    <div class="quick-start-step glass-card">
+      <div class="quick-start-num">2</div>
+      <div class="quick-start-content">
+        <h3>Send Reminders</h3>
+        <p>Use the <a href="#templates">email templates</a> to send reminders to missing providers. CC Lindsay on escalations.</p>
+        <span class="quick-start-time">~5 min</span>
+      </div>
+    </div>
+
+    <div class="quick-start-step glass-card">
+      <div class="quick-start-num">3</div>
+      <div class="quick-start-content">
+        <h3>Update the Sheet</h3>
+        <p>Mark who submitted, who got reminders, and any notes in the <a href="#sheet">tracking sheet</a>.</p>
+        <span class="quick-start-time">~3 min</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-start-note glass-card">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+    <p><strong>First time?</strong> Read the full <a href="#how-it-works">How It Works</a> section to understand the complete workflow before running the process.</p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="reveal" aria-labelledby="how-it-works-heading">
+  <div class="section-header">
+
+    <div class="hours-banner" role="alert">
+      <div class="hours-banner-inner">
+        <div class="hours-banner-icon" aria-hidden="true">&#9888;&#65039;</div>
+        <div>
+          <h3>Minimum Hours Requirement</h3>
+          <p><strong>All providers are required to work a minimum of 30 hours per week.</strong> Schedules submitted with fewer than 30 hours will need to be revised. Please ensure all provider schedules meet this requirement before approval.</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="how-it-works-heading">How It Works</h2>
+    <p>Five steps from weekly audit to resolved submissions — runs on autopilot once configured.</p>
+  </div>
+  <div class="pipeline" role="list">
+    <div class="pipeline-step step-1" role="listitem">
+      <div class="step-num">1</div>
+      <div class="step-title">Weekly Audit</div>
+      <div class="step-desc">Gemini scans Gmail for 'Schedule' emails from each provider in the last 14 days.</div>
+      <span class="step-cadence">Every Monday</span>
+    </div>
+    <div class="pipeline-step step-2" role="listitem">
+      <div class="step-num">2</div>
+      <div class="step-title">Missing List</div>
+      <div class="step-desc">Generates alphabetical list of providers who haven't submitted, with submission dates for those who have.</div>
+      <span class="step-cadence">Same day</span>
+    </div>
+    <div class="pipeline-step step-3" role="listitem">
+      <div class="step-num">3</div>
+      <div class="step-title">First Reminder</div>
+      <div class="step-desc">Friendly reminder email sent automatically to missing providers.</div>
+      <span class="step-cadence">Tuesday</span>
+    </div>
+    <div class="pipeline-step step-4" role="listitem">
+      <div class="step-num">4</div>
+      <div class="step-title">Escalation</div>
+      <div class="step-desc">Second email sent to still-missing providers with team lead CC'd.</div>
+      <span class="step-cadence">Thursday</span>
+    </div>
+    <div class="pipeline-step step-5" role="listitem">
+      <div class="step-num">5</div>
+      <div class="step-title">Log Updated</div>
+      <div class="step-desc">Tracking sheet updated with submission status, dates, and reminders sent.</div>
+      <span class="step-cadence">Ongoing</span>
+    </div>
+  </div>
+
+  <!-- Current Cycle Timeline -->
+  <div class="cycle-timeline-section">
+    <h3 class="subsection-title">Current Cycle Timeline</h3>
+    <p class="subsection-desc">Two automated tasks per 2-week cycle — a friendly reminder 2 days before the due date, and an escalation on the due date with Lindsay CC'd.</p>
+
+    <div class="tasks-layout">
+      <!-- Timeline -->
+      <div>
+        <div id="cycleDateLabel" style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:16px;">Current Cycle · Loading...</div>
+        <div class="timeline" role="list">
+          <div class="tl-item" role="listitem">
+            <div class="tl-left">
+              <div class="tl-dot" style="background:var(--accent2)"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date" id="tlCycleStart">Loading...</div>
+              <div class="tl-title" style="color:var(--muted);font-weight:400">Providers begin submitting schedules</div>
+            </div>
+          </div>
+          <div class="tl-item" role="listitem">
+            <div class="tl-left">
+              <div class="tl-dot" style="background:var(--accent)"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date" id="tlReminder">Loading...</div>
+              <div class="tl-title">First Reminder</div>
+              <div class="tl-desc">Audit runs · Friendly reminder sent to all missing providers · Sheet updated</div>
+              <span class="tl-chip" style="background:var(--pill-bg);color:var(--accent)">Automated</span>
+            </div>
+          </div>
+          <div class="tl-item" role="listitem">
+            <div class="tl-left">
+              <div class="tl-dot" style="background:var(--accent5)"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date" id="tlEscalation">Loading...</div>
+              <div class="tl-title">Escalation</div>
+              <div class="tl-desc">Final audit · Escalation email sent to still-missing · Lindsay CC'd · Sheet finalized</div>
+              <span class="tl-chip" style="background:var(--tag-orange);color:var(--accent5)">Automated · CC: lindsay@fountain.net</span>
+            </div>
+          </div>
+          <div class="tl-item" role="listitem">
+            <div class="tl-left">
+              <div class="tl-dot" style="background:var(--border)"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date" id="tlNextCycle">Loading...</div>
+              <div class="tl-title" style="color:var(--muted);font-weight:400">New sheet tab created · Process repeats</div>
+            </div>
+          </div>
+          <div class="tl-item" role="listitem">
+            <div class="tl-left">
+              <div class="tl-dot" style="background:var(--accent)"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date" id="tlNextReminder">Loading...</div>
+              <div class="tl-title">Next Reminder</div>
+              <div class="tl-desc">Repeats every 2 weeks</div>
+              <span class="tl-chip" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border)">Upcoming</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task detail cards -->
+      <div>
+        <div class="task-selector" role="tablist">
+          <button class="task-btn active" onclick="showTask('reminder', this)" role="tab" aria-selected="true" aria-controls="task-reminder">First Reminder</button>
+          <button class="task-btn" onclick="showTask('escalation', this)" role="tab" aria-selected="false" aria-controls="task-escalation">Escalation</button>
+        </div>
+
+        <!-- Reminder task -->
+        <div class="task-panel active" id="task-reminder" role="tabpanel">
+          <article class="task-card glass-card">
+            <div class="task-card-header">
+              <span class="task-card-title">Task: Provider Schedule Reminder</span>
+              <span class="tl-chip" style="background:var(--pill-bg);color:var(--accent)" id="reminderFireDate">Loading...</span>
+            </div>
+            <div class="task-card-body">
+              <div class="task-field">
+                <div class="task-field-label">Schedule</div>
+                <div class="task-field-val" id="reminderSchedule">Loading...</div>
+              </div>
+              <div class="task-field">
+                <div class="task-field-label">What it does</div>
+                <div class="task-field-val">
+                  1. Opens Gmail and searches for emails with "Schedule" in the subject from each provider in the last 14 days<br><br>
+                  2. Identifies who hasn't submitted<br><br>
+                  3. Sends the <strong>First Reminder</strong> template to each missing provider<br><br>
+                  4. Updates the active Google Sheet tab — marks "Reminder Sent" with today's date
+                </div>
+              </div>
+              <div class="task-field">
+                <div class="task-field-label">From</div>
+                <div class="task-field-val"><code>Ashley@fountain.net</code></div>
+              </div>
+              <div class="task-field">
+                <div class="task-field-label">CC</div>
+                <div class="task-field-val" style="color:var(--muted)">None on first reminder</div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Escalation task -->
+        <div class="task-panel" id="task-escalation" role="tabpanel">
+          <article class="task-card glass-card">
+            <div class="task-card-header">
+              <span class="task-card-title">Task: Schedule Escalation</span>
+              <span class="tl-chip" style="background:var(--tag-orange);color:var(--accent5)" id="escalationFireDate">Loading...</span>
+            </div>
+            <div class="task-card-body">
+              <div class="task-field">
+                <div class="task-field-label">Schedule</div>
+                <div class="task-field-val" id="escalationSchedule">Loading...</div>
+              </div>
+              <div class="task-field">
+                <div class="task-field-label">What it does</div>
+                <div class="task-field-val">
+                  1. Re-runs the Gmail audit for still-missing providers (ignores anyone who submitted since the reminder)<br><br>
+                  2. Sends the <strong>Escalation</strong> template to each remaining missing provider with Lindsay CC'd<br><br>
+                  3. Updates the Google Sheet — marks "Escalation Sent" with today's date<br><br>
+                  4. Prepares the next cycle's sheet tab
+                </div>
+              </div>
+              <div class="task-field">
+                <div class="task-field-label">From</div>
+                <div class="task-field-val"><code>Ashley@fountain.net</code></div>
+              </div>
+              <div class="task-field">
+                <div class="task-field-label">CC</div>
+                <div class="task-field-val"><code>lindsay@fountain.net</code></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTOMATION TOOLS -->
+<section id="tools" class="reveal" aria-labelledby="tools-heading">
+  <div class="section-header">
+    <h2 id="tools-heading">Automation Tools</h2>
+    <p>Copy-paste prompts for Gemini to automate the audit and calendar blocking processes.</p>
+  </div>
+
+  <h3 class="subsection-title">Gmail Audit Prompt</h3>
+  <p class="subsection-desc">Paste this into Gemini with Gmail access to identify who hasn't submitted their schedule.</p>
+
+  <div class="prompt-card glass-card">
+    <div class="prompt-header">
+      <div class="prompt-header-left">
+        <div class="dots" aria-hidden="true">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+        </div>
+        <span>Gemini Prompt — Gmail Audit</span>
+      </div>
+      <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy audit prompt to clipboard">Copy prompt</button>
+    </div>
+    <div class="prompt-body" id="promptText" aria-label="Gemini audit prompt content">
+      <!-- Content dynamically generated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Calendar Blocking Prompt -->
+  <h3 class="subsection-title" style="margin-top: 48px;">Calendar Blocking Prompt</h3>
+  <p class="subsection-desc">After a provider submits their schedule, use this prompt to automatically create calendar events.</p>
+
+  <div class="cal-layout">
+    <!-- Left: flow steps -->
+    <div class="cal-flow" role="list">
+      <div class="cal-step" role="listitem">
+        <div class="cal-step-icon" style="background:var(--pill-bg)" aria-hidden="true">&#128232;</div>
+        <div class="cal-step-text">
+          <div class="cal-step-title">Provider sends schedule email</div>
+          <div class="cal-step-desc">Email arrives with "Schedule" in the subject line.</div>
+        </div>
+      </div>
+      <div class="cal-arrow" aria-hidden="true">&#8595;</div>
+      <div class="cal-step" role="listitem">
+        <div class="cal-step-icon" style="background:var(--tag-green)" aria-hidden="true">&#128269;</div>
+        <div class="cal-step-text">
+          <div class="cal-step-title">Gemini reads the email</div>
+          <div class="cal-step-desc">Extracts dates, times, and any notes or exceptions.</div>
+        </div>
+      </div>
+      <div class="cal-arrow" aria-hidden="true">&#8595;</div>
+      <div class="cal-step" role="listitem">
+        <div class="cal-step-icon" style="background:var(--tag-purple)" aria-hidden="true">&#128197;</div>
+        <div class="cal-step-text">
+          <div class="cal-step-title">Calendar events created</div>
+          <div class="cal-step-desc">Events added to the provider's shared calendar.</div>
+        </div>
+      </div>
+      <div class="cal-arrow" aria-hidden="true">&#8595;</div>
+      <div class="cal-step" role="listitem">
+        <div class="cal-step-icon" style="background:var(--tag-orange)" aria-hidden="true">&#9989;</div>
+        <div class="cal-step-text">
+          <div class="cal-step-title">Sheet updated</div>
+          <div class="cal-step-desc">Marked "Calendar Blocked" with timestamp.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: example prompt -->
+    <div class="cal-prompt-card glass-card">
+      <div class="cal-prompt-header">
+        <div class="cal-prompt-header-left">
+          <div class="dots" aria-hidden="true">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+          </div>
+          <span>Gemini Prompt — Calendar Blocking</span>
+        </div>
+        <button class="copy-btn" onclick="copyCalPrompt(this)" aria-label="Copy calendar prompt to clipboard">Copy prompt</button>
+      </div>
+      <div class="cal-prompt-body"><span class="ck">I just received a schedule email from a provider.</span>
+<span class="cm">Here is the email body:</span>
+
+<span class="ch">---</span>
+<span class="cm">[paste email body here]</span>
+<span class="ch">---</span>
+
+<span class="ck">Please do the following:</span>
+
+<span class="cv">1. Extract</span> all dates, shift start times, and end
+   times mentioned in the email.
+
+<span class="cv">2. Identify</span> the provider's name from the email
+   sender or signature.
+
+<span class="cv">3. Create Google Calendar events</span> for each shift
+   or availability block using these details:
+   • Title: <span class="ch">[Provider Name] — Schedule</span>
+   • Calendar: <span class="ch">Fountain Provider Schedules</span>
+   • Add any notes or exceptions as the description.
+
+<span class="cv">4. If any dates or times are ambiguous</span>, flag
+   them and ask me to confirm before creating
+   the event.
+
+<span class="cv">5. Confirm</span> once all events have been created,
+   listing each one with its date and time.</div>
+      <div class="cal-note">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;margin-top:1px" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        Run this prompt in Gemini with Google Calendar access enabled.
+      </div>
+    </div>
+  </div>
+
+  <!-- OnceHub Note -->
+  <div class="oncehub-section">
+    <div class="oncehub-header">
+      <span style="font-size: 1.3rem;" aria-hidden="true">&#128197;</span>
+      <h3>OnceHub Schedule Sync</h3>
+      <span class="status-badge status-planned">Planned</span>
+    </div>
+    <p class="oncehub-desc">Provider availability also needs to be updated in OnceHub for booking pages. Currently this is done manually.</p>
+
+    <div class="oncehub-grid">
+      <div class="oncehub-card glass-card">
+        <div class="oncehub-card-label" style="color: #f59e0b;">Current Process</div>
+        <p>Provider sends hours → Admin manually updates OnceHub → Google Calendar syncs.</p>
+      </div>
+      <div class="oncehub-card glass-card">
+        <div class="oncehub-card-label" style="color: #3b82f6;">Planned Automation</div>
+        <p>Browser automation will push schedules directly into OnceHub's admin panel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROVIDERS -->
+<section id="providers" class="reveal" aria-labelledby="providers-heading">
+  <div class="section-header">
+    <h2 id="providers-heading">Provider Roster</h2>
+    <p>All providers tracked in this system. Search by name or email below.</p>
+  </div>
+  <div class="table-controls">
+    <input class="search-box" type="text" placeholder="Search providers…" oninput="filterTable(this.value)" aria-label="Search providers by name or email" />
+    <span class="count-badge" id="providerCount" aria-live="polite">18 providers</span>
+  </div>
+  <div class="table-wrap">
+    <table class="provider-table" id="providerTable" aria-label="Provider roster">
+      <thead>
+        <tr>
+          <th scope="col">Provider</th>
+          <th scope="col">Email</th>
+          <th scope="col">Submission</th>
+        </tr>
+      </thead>
+      <tbody id="providerBody">
+        <!-- Rows injected by JavaScript -->
+      </tbody>
+    </table>
+    <div class="no-results hidden" id="noResults" role="status">No providers match your search.</div>
+  </div>
+</section>
+
+<!-- TEMPLATES & GUIDELINES -->
+<section id="templates" class="reveal" aria-labelledby="templates-heading">
+  <div class="section-header">
+    <h2 id="templates-heading">Templates & Guidelines</h2>
+    <p>Email templates for reminders and escalations, plus the format guide to share with providers.</p>
+  </div>
+
+  <h3 class="subsection-title">Email Templates</h3>
+  <p class="subsection-desc">Ready-to-use templates for reminders and follow-ups. Fields in <code style="background:rgba(88,166,255,.12);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:12px;">[brackets]</code> are filled automatically.</p>
+  <div class="templates-grid">
+
+    <!-- Template 1 -->
+    <article class="email-card glass-card">
+      <div class="email-header">
+        <span class="email-title">First Reminder</span>
+        <span class="email-tag tag-reminder">Reminder · Day 2</span>
+      </div>
+      <div class="email-meta">
+        <div class="meta-row"><span class="meta-label">To:</span><span class="meta-val"><span class="placeholder">[provider_email]</span></span></div>
+        <div class="meta-row"><span class="meta-label">Subject:</span><span class="meta-val">Schedule Reminder — <span class="placeholder">[week_of]</span></span></div>
+        <div class="meta-row"><span class="meta-label">From:</span><span class="meta-val">Ashley@fountain.net</span></div>
+      </div>
+      <div class="email-body">
+        <p>Hi <span class="placeholder">[first_name]</span>,</p>
+        <p>Just a quick reminder — we haven't received your schedule for the week of <span class="placeholder">[week_of]</span> yet.</p>
+        <p>Please send it over when you get a chance so we can keep things moving smoothly. If you have any questions or conflicts to flag, feel free to reply here.</p>
+        <p>Thanks!<br>Daniel</p>
+      </div>
+    </article>
+
+    <!-- Template 2 -->
+    <article class="email-card glass-card">
+      <div class="email-header">
+        <span class="email-title">Follow-Up / Escalation</span>
+        <span class="email-tag tag-followup">Escalation · Day 4</span>
+      </div>
+      <div class="email-meta">
+        <div class="meta-row"><span class="meta-label">To:</span><span class="meta-val"><span class="placeholder">[provider_email]</span></span></div>
+        <div class="meta-row"><span class="meta-label">CC:</span><span class="meta-val"><span class="placeholder">[team_lead_email]</span></span></div>
+        <div class="meta-row"><span class="meta-label">Subject:</span><span class="meta-val">ACTION NEEDED: Schedule — <span class="placeholder">[week_of]</span></span></div>
+      </div>
+      <div class="email-body">
+        <p>Hi <span class="placeholder">[first_name]</span>,</p>
+        <p>Following up on our earlier reminder — we still haven't received your schedule for the week of <span class="placeholder">[week_of]</span>.</p>
+        <p>We need this by end of day today to finalize planning. Please reply to this email or send your schedule directly.</p>
+        <p>Thank you,<br>Daniel</p>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- Format Guide -->
+  <h3 class="subsection-title" style="margin-top: 48px;">Schedule Format Guide</h3>
+  <p class="subsection-desc">Share this with providers so they know exactly how to submit their hours. Consistent formatting means fewer errors.</p>
+
+  <div class="format-grid">
+    <!-- Good Example -->
+    <div class="format-example good glass-card">
+      <div class="format-example-header">
+        <span class="format-badge good">GOOD</span>
+        <span style="color: var(--muted); font-size: 0.85rem;">Clear dates and times</span>
+      </div>
+      <div class="format-code" style="color: var(--text);">
+        Mon 3/17: 9:00 AM – 5:00 PM<br>
+        Tue 3/18: 10:00 AM – 3:00 PM<br>
+        Wed 3/19: OFF<br>
+        Thu 3/20: 9:00 AM – 6:00 PM<br>
+        Fri 3/21: 9:00 AM – 1:00 PM
+      </div>
+    </div>
+
+    <!-- Bad Example -->
+    <div class="format-example bad glass-card">
+      <div class="format-example-header">
+        <span class="format-badge bad">AVOID</span>
+        <span style="color: var(--muted); font-size: 0.85rem;">Vague or incomplete</span>
+      </div>
+      <div class="format-code" style="color: var(--muted);">
+        I'll be available most of next week.<br>
+        Probably mornings except Wednesday.<br>
+        Same as last time I think?<br>
+        <br>
+        &#8203;
+      </div>
+    </div>
+  </div>
+
+  <!-- Format Rules -->
+  <div class="format-rules glass-card">
+    <h4>What we need in every submission</h4>
+    <div class="format-rules-grid">
+      <div class="format-rule">
+        <div class="format-rule-title" style="color: var(--accent);">&#128197; Specific Dates</div>
+        <p>Day of week + date (e.g., Mon 3/17). No "next week" or "same as usual."</p>
+      </div>
+      <div class="format-rule">
+        <div class="format-rule-title" style="color: var(--accent2);">&#9200; Start & End Times</div>
+        <p>Include AM/PM. Use "OFF" for days not working. No "mornings" or "afternoons."</p>
+      </div>
+      <div class="format-rule">
+        <div class="format-rule-title" style="color: var(--accent3);">&#128221; Notes & Exceptions</div>
+        <p>PTO, half-days, or schedule changes — call them out explicitly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTOMATION ROADMAP -->
+<section id="roadmap" class="roadmap-section reveal" aria-labelledby="roadmap-heading">
+  <div class="section-header">
+    <h2 id="roadmap-heading">Automation Roadmap</h2>
+    <p>We're building this system in three phases. By the end of April, provider scheduling will be 90% automated.</p>
+  </div>
+
+  <!-- Prerequisites -->
+  <div class="prerequisites-card glass-card">
+    <div class="prerequisites-header">
+      <span class="prerequisites-icon">&#9989;</span>
+      <h3>Prerequisites</h3>
+    </div>
+    <p class="prerequisites-desc">Make sure you have the following before starting:</p>
+    <ul class="prerequisites-list">
+      <li><span class="prereq-check">&#10003;</span> Access to <strong>Ashley@fountain.net</strong> Gmail inbox</li>
+      <li><span class="prereq-check">&#10003;</span> <a href="https://gemini.google.com" target="_blank" rel="noopener">Google Gemini</a> with Gmail access enabled</li>
+      <li><span class="prereq-check">&#10003;</span> Current <a href="#providers">provider roster</a> (18 active providers)</li>
+      <li><span class="prereq-check">&#10003;</span> Access to provider Google Calendars</li>
+      <li><span class="prereq-check">&#10003;</span> OnceHub admin credentials (for Phase 3)</li>
+    </ul>
+  </div>
+
+  <!-- Upcoming Cycle Calendar -->
+  <div class="cycle-calendar glass-card">
+    <div class="cycle-calendar-header">
+      <span class="cycle-calendar-icon">&#128197;</span>
+      <h3>Upcoming Cycles</h3>
+    </div>
+    <div class="cycle-calendar-grid" id="cycleCalendarGrid">
+      <!-- Populated by JavaScript -->
+    </div>
+  </div>
+
+  <div class="roadmap-target glass-card">
+    <div class="roadmap-target-icon">&#127919;</div>
+    <div class="roadmap-target-content">
+      <div class="roadmap-target-title">Target: 90% Automation by End of April</div>
+      <div class="roadmap-target-desc">From manual inbox scanning to a fully automated reminder and tracking system — reducing admin time from hours to minutes per cycle.</div>
+    </div>
+  </div>
+
+  <div class="roadmap-timeline">
+    <!-- Phase 1 -->
+    <div class="roadmap-phase glass-card phase-current">
+      <div class="roadmap-phase-header">
+        <div class="roadmap-phase-badge phase-1">Phase 1</div>
+        <div class="roadmap-phase-status status-current">In Progress</div>
+      </div>
+      <h3 class="roadmap-phase-title">Email Scanning & Draft Generation</h3>
+      <p class="roadmap-phase-desc">Establish the foundation: use Gemini to scan Gmail for schedule submissions and automatically identify missing providers. Generate draft reminder and escalation emails ready for review.</p>
+
+      <div class="roadmap-steps collapsible" data-phase="1">
+        <button class="roadmap-steps-toggle" onclick="toggleSteps(this)" aria-expanded="true">
+          <h4 class="roadmap-steps-title">How to Execute</h4>
+          <span class="toggle-icon">&#9660;</span>
+        </button>
+        <div class="roadmap-steps-content">
+          <ol class="roadmap-steps-list interactive" id="phase1Steps">
+            <li data-step="p1-1">
+              <label class="step-checkbox">
+                <input type="checkbox" onchange="saveStepProgress('p1-1', this.checked)">
+                <span class="checkmark"></span>
+              </label>
+              <div class="step-content">
+                <strong>Open the scheduling inbox</strong>
+                <span>Go to Gmail and navigate to Ashley@fountain.net (or the designated scheduling inbox).</span>
+              </div>
+            </li>
+            <li data-step="p1-2">
+              <label class="step-checkbox">
+                <input type="checkbox" onchange="saveStepProgress('p1-2', this.checked)">
+                <span class="checkmark"></span>
+              </label>
+              <div class="step-content">
+                <strong>Copy the audit prompt</strong>
+                <span>Go to the <a href="#tools">Tools section</a> on this site and copy the Gemini Audit Prompt.</span>
+              </div>
+            </li>
+            <li data-step="p1-3">
+              <label class="step-checkbox">
+                <input type="checkbox" onchange="saveStepProgress('p1-3', this.checked)">
+                <span class="checkmark"></span>
+              </label>
+              <div class="step-content">
+                <strong>Run the audit in Gemini</strong>
+                <span>Open <a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini</a>, paste the prompt, and provide your inbox contents or screenshots. Gemini will identify which providers have not submitted.</span>
+              </div>
+            </li>
+            <li data-step="p1-4">
+              <label class="step-checkbox">
+                <input type="checkbox" onchange="saveStepProgress('p1-4', this.checked)">
+                <span class="checkmark"></span>
+              </label>
+              <div class="step-content">
+                <strong>Review the missing providers list</strong>
+                <span>Cross-check the output against the active provider roster. Note any providers on PTO or leave.</span>
+              </div>
+            </li>
+            <li data-step="p1-5">
+              <label class="step-checkbox">
+                <input type="checkbox" onchange="saveStepProgress('p1-5', this.checked)">
+                <span class="checkmark"></span>
+              </label>
+              <div class="step-content">
+                <strong>Draft reminder emails</strong>
+                <span>Use the <a href="#templates">email templates</a> to create reminder messages. Copy the appropriate template (friendly or escalation) based on the deadline.</span>
+              </div>
+            </li>
+            <li data-step="p1-6">
+              <label class="step-checkbox">
+                <input type="checkbox" onchange="saveStepProgress('p1-6', this.checked)">
+                <span class="checkmark"></span>
+              </label>
+              <div class="step-content">
+                <strong>Review and send</strong>
+                <span>Personalize each draft if needed, then send to the missing providers. Log who was contacted and when.</span>
+              </div>
+            </li>
+          </ol>
+          <div class="steps-progress">
+            <div class="steps-progress-bar" id="phase1Progress"></div>
+            <span class="steps-progress-text" id="phase1ProgressText">0 of 6 complete</span>
+            <button class="steps-reset-btn" onclick="resetPhaseProgress(1)" title="Reset progress">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success Metrics -->
+      <div class="success-metrics">
+        <h4 class="success-metrics-title">&#127942; Definition of Done</h4>
+        <ul class="success-metrics-list">
+          <li>Audit takes less than 10 minutes to complete</li>
+          <li>All missing providers identified accurately</li>
+          <li>Reminder emails sent by Day 3 of cycle</li>
+          <li>Escalation emails sent on deadline day</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-phase-details">
+        <div class="roadmap-detail">
+          <span class="roadmap-detail-label">Focus</span>
+          <span class="roadmap-detail-value">Gmail audit automation, message drafting</span>
+        </div>
+        <div class="roadmap-detail">
+          <span class="roadmap-detail-label">Timeline</span>
+          <span class="roadmap-detail-value">2 weeks</span>
+        </div>
+        <div class="roadmap-detail">
+          <span class="roadmap-detail-label">Deliverables</span>
+          <span class="roadmap-detail-value">Audit prompts, email templates, this documentation site</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="roadmap-phase glass-card phase-upcoming">
+      <div class="roadmap-phase-header">
+        <div class="roadmap-phase-badge phase-2">Phase 2</div>
+        <div class="roadmap-phase-status status-upcoming">Upcoming</div>
+      </div>
+      <h3 class="roadmap-phase-title">Data Collection & Tracking</h3>
+      <p class="roadmap-phase-desc">Build the tracking infrastructure: create an automated spreadsheet that logs submissions, tracks compliance history, and provides real-time visibility into provider status across cycles.</p>
+
+      <div class="roadmap-steps collapsible collapsed" data-phase="2">
+        <button class="roadmap-steps-toggle" onclick="toggleSteps(this)" aria-expanded="false">
+          <h4 class="roadmap-steps-title">How to Execute</h4>
+          <span class="toggle-icon">&#9654;</span>
+        </button>
+        <div class="roadmap-steps-content" style="display: none;">
+          <ol class="roadmap-steps-list">
+            <li>
+              <div class="step-content">
+                <strong>Create a Google Sheet</strong>
+                <span>Set up a new spreadsheet with columns: Provider Name, Email, Cycle Dates, Submission Status, Date Received, and Notes.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Import the provider roster</strong>
+                <span>Copy the list of active providers into the sheet. Include their email addresses for automated matching.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Set up Google Apps Script</strong>
+                <span>Open Extensions > Apps Script. Paste the automation code that scans Gmail for schedule emails and logs them to the sheet.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Configure email parsing rules</strong>
+                <span>Define how to extract provider names from email subjects/senders. Set up pattern matching for "Schedule" or provider name variations.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Add conditional formatting</strong>
+                <span>Color-code rows: green for submitted, yellow for pending, red for overdue. Add deadline formulas to auto-calculate status.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Test with sample emails</strong>
+                <span>Send test schedule emails and verify they populate correctly. Adjust parsing rules as needed.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Enable daily sync</strong>
+                <span>Set up a time-based trigger to run the script automatically each morning, keeping the sheet current.</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Success Metrics -->
+      <div class="success-metrics">
+        <h4 class="success-metrics-title">&#127942; Definition of Done</h4>
+        <ul class="success-metrics-list">
+          <li>Sheet auto-updates within 1 hour of email receipt</li>
+          <li>Zero manual data entry required</li>
+          <li>Historical compliance data available for all providers</li>
+          <li>Status visible at a glance via color-coding</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-phase-details">
+        <div class="roadmap-detail">
+          <span class="roadmap-detail-label">Focus</span>
+          <span class="roadmap-detail-value">Spreadsheet automation, data parsing, compliance tracking</span>
+        </div>
+        <div class="roadmap-detail">
+          <span class="roadmap-detail-label">Timeline</span>
+          <span class="roadmap-detail-value">2 weeks</span>
+        </div>
+        <div class="roadmap-detail">
+          <span class="roadmap-detail-label">Deliverables</span>
+          <span class="roadmap-detail-value">Auto-populated tracker, submission history, reporting dashboard</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="roadmap-phase glass-card phase-upcoming">
+      <div class="roadmap-phase-header">
+        <div class="roadmap-phase-badge phase-3">Phase 3</div>
+        <div class="roadmap-phase-status status-upcoming">Upcoming</div>
+      </div>
+      <h3 class="roadmap-phase-title">Full Automation & Integration</h3>
+      <p class="roadmap-phase-desc">Connect all the pieces: automated email sending on schedule, calendar blocking from parsed submissions, OnceHub availability sync, and end-to-end workflow orchestration with minimal manual intervention.</p>
+
+      <div class="roadmap-steps collapsible collapsed" data-phase="3">
+        <button class="roadmap-steps-toggle" onclick="toggleSteps(this)" aria-expanded="false">
+          <h4 class="roadmap-steps-title">How to Execute</h4>
+          <span class="toggle-icon">&#9654;</span>
+        </button>
+        <div class="roadmap-steps-content" style="display: none;">
+          <ol class="roadmap-steps-list">
+            <li>
+              <div class="step-content">
+                <strong>Set up scheduled reminder triggers</strong>
+                <span>Configure Apps Script to automatically send reminder emails on Day 3 (friendly) and Day 5 (escalation) of each cycle based on missing submissions.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Build email queue with approval</strong>
+                <span>Create a "Pending Emails" tab in the sheet. Automated drafts land here for quick review before batch-sending.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Parse schedules into calendar format</strong>
+                <span>Extract dates and times from submitted schedules. Convert to structured data (day, start time, end time) for calendar integration.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Connect to Google Calendar</strong>
+                <span>Use Calendar API to create "busy" blocks on provider calendars based on their submitted availability.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Integrate with OnceHub</strong>
+                <span>Use OnceHub's API or browser automation to sync provider availability. Block booking pages during scheduled patient hours.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Create escalation rules</strong>
+                <span>Define automatic escalation paths: after Day 5, CC supervisor; after Day 7, flag for manual intervention.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Test end-to-end with pilot group</strong>
+                <span>Run the full workflow with 3-5 providers for one cycle. Document issues and refine automation rules.</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-content">
+                <strong>Roll out and monitor</strong>
+                <span>Deploy to all providers. Set up a dashboard to track automation success rate, response times, and exceptions.</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Success Metrics -->
+      <div class="success-metrics">
+        <h4 class="success-metrics-title">&#127942; Definition of Done</h4>
+        <ul class="success-metrics-list">
+          <li>90% of reminders sent without manual intervention</li>
+          <li>Calendar events created automatically from submissions</li>
+          <li>OnceHub availability synced within same day</li>
+          <li>Admin time reduced from hours to minutes per cycle</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-phase-details">
+        <div class="roadmap-detail">
+          <span class="roadmap-detail-label">Focus</span>
+          <span class="roadmap-detail-value">Automated sending, calendar sync, OnceHub integration</span>
+        </div>
+        <div class="roadmap-detail">
+          <span class="roadmap-detail-label">Timeline</span>
+          <span class="roadmap-detail-value">2 weeks</span>
+        </div>
+        <div class="roadmap-detail">
+          <span class="roadmap-detail-label">Deliverables</span>
+          <span class="roadmap-detail-value">Fully automated reminder system, calendar blocking, 90% hands-off operation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-note glass-card">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+    <p>Each phase builds on the previous one. The documentation and tools on this site will be updated as we progress through each phase.</p>
+  </div>
+</section>
+
+<!-- FAQ & EDGE CASES -->
+<section id="faq" class="troubleshooting-section reveal" aria-labelledby="faq-heading">
+  <div class="section-header">
+    <h2 id="faq-heading">FAQ & Edge Cases</h2>
+    <p>Common issues and questions about the schedule collection process.</p>
+  </div>
+
+  <h3 class="subsection-title">Common Issues</h3>
+
+  <div class="troubleshooting-list">
+    <article class="troubleshooting-item glass-card">
+      <div class="troubleshooting-header">
+        <span class="troubleshooting-badge common">COMMON</span>
+        <h3>Provider sent schedule to the wrong email</h3>
+      </div>
+      <p>The audit only scans emails sent to <strong>Ashley@fountain.net</strong>. Ask the provider to forward it to the correct address with "Schedule" in the subject line, then manually mark the sheet as received.</p>
+    </article>
+
+    <article class="troubleshooting-item glass-card">
+      <div class="troubleshooting-header">
+        <span class="troubleshooting-badge common">COMMON</span>
+        <h3>Schedule has vague or conflicting times</h3>
+      </div>
+      <p>If a provider says "same as last time" or lists overlapping hours, reply asking for clarification with specific dates. Share the format guide. Mark as received once the corrected version comes in.</p>
+    </article>
+
+    <article class="troubleshooting-item glass-card">
+      <div class="troubleshooting-header">
+        <span class="troubleshooting-badge system">SYSTEM</span>
+        <h3>Audit didn't detect a submitted schedule</h3>
+      </div>
+      <p>The audit searches for "Schedule" in the subject line. If a provider used a different subject or sent from a personal email, it won't match. Manually update the tracker.</p>
+    </article>
+
+    <article class="troubleshooting-item glass-card">
+      <div class="troubleshooting-header">
+        <span class="troubleshooting-badge system">SYSTEM</span>
+        <h3>Reminder sent to provider who already submitted</h3>
+      </div>
+      <p>This happens if the tracker wasn't updated before the reminder task ran. Apologize briefly and mark the sheet as received so escalation doesn't trigger.</p>
+    </article>
+  </div>
+
+  <h3 class="subsection-title" style="margin-top: 48px;">Edge Cases</h3>
+
+  <div class="troubleshooting-list">
+    <article class="troubleshooting-item glass-card">
+      <div class="troubleshooting-header">
+        <span class="troubleshooting-badge edge">EDGE CASE</span>
+        <h3>Provider is on PTO for the entire period</h3>
+      </div>
+      <p>Mark them as "Submitted" with a note like "PTO — full period." Block the full period on their calendar and set OnceHub availability to zero. No reminder needed.</p>
+    </article>
+
+    <article class="troubleshooting-item glass-card">
+      <div class="troubleshooting-header">
+        <span class="troubleshooting-badge edge">EDGE CASE</span>
+        <h3>Provider submits mid-cycle schedule change</h3>
+      </div>
+      <p>Update the calendar events, adjust OnceHub availability, and add a note in the tracker (e.g., "Updated 3/12 — moved Thu to PM only"). No need to re-run the audit.</p>
+    </article>
+
+    <article class="troubleshooting-item glass-card">
+      <div class="troubleshooting-header">
+        <span class="troubleshooting-badge edge">EDGE CASE</span>
+        <h3>Schedule deadline falls on a weekend</h3>
+      </div>
+      <p>Deadlines that fall on weekends are automatically moved to the following Monday. Reminder timing adjusts accordingly to maintain the 2-day buffer.</p>
+    </article>
+  </div>
+
+  <h3 class="subsection-title" style="margin-top: 48px;">Frequently Asked Questions</h3>
+
+  <div class="faq-list">
+    <article class="faq-item glass-card">
+      <div class="faq-question">What's the follow-up cadence?</div>
+      <div class="faq-answer">First reminder goes out <strong>2 days before</strong> the due date. Escalation (with Lindsay CC'd) goes out <strong>on the due date</strong>. This gives providers a buffer while ensuring timely collection.</div>
+    </article>
+
+    <article class="faq-item glass-card">
+      <div class="faq-question">Can multiple team members run the audit?</div>
+      <div class="faq-answer">Currently scoped to Ashley@fountain.net. For shared responsibility, use the <strong>Google Sheet as the source of truth</strong> so anyone can see status. The escalation CC to Lindsay provides a second set of eyes.</div>
+    </article>
+
+    <article class="faq-item glass-card">
+      <div class="faq-question">Where do I send providers for submission instructions?</div>
+      <div class="faq-answer">Share the <a href="#for-providers">For Providers</a> section below — it has everything they need to know about submitting their schedule correctly.</div>
+    </article>
+  </div>
+</section>
+
+<!-- FOR PROVIDERS (Shareable) -->
+<section id="for-providers" class="for-providers-section reveal" aria-labelledby="for-providers-heading">
+  <div class="section-header">
+    <span class="section-badge provider-badge">Share with Providers</span>
+    <h2 id="for-providers-heading">For Providers</h2>
+    <p>Everything providers need to know about submitting their schedule. Share this section directly.</p>
+  </div>
+
+  <div class="provider-info-grid">
+    <div class="provider-info-card glass-card">
+      <div class="provider-info-icon">&#128231;</div>
+      <h3>How to Submit</h3>
+      <p>Email your schedule to <strong>Ashley@fountain.net</strong> with <strong>"Schedule"</strong> in the subject line. You can also post it in Slack — as long as dates and times are clear.</p>
+    </div>
+
+    <div class="provider-info-card glass-card">
+      <div class="provider-info-icon">&#128197;</div>
+      <h3>When to Submit</h3>
+      <p>Submit your schedule <strong>at the start of each 2-week cycle</strong>. You'll receive a reminder if we haven't heard from you by Day 2, and a follow-up on the due date if needed.</p>
+    </div>
+
+    <div class="provider-info-card glass-card">
+      <div class="provider-info-icon">&#9200;</div>
+      <h3>Minimum Hours</h3>
+      <p>All providers are required to work <strong>a minimum of 30 hours per week</strong>. Schedules with fewer hours will need to be revised before approval.</p>
+    </div>
+
+    <div class="provider-info-card glass-card">
+      <div class="provider-info-icon">&#128221;</div>
+      <h3>Format Required</h3>
+      <p>Include <strong>specific dates</strong> (Mon 3/17), <strong>start and end times</strong> with AM/PM, and use "OFF" for non-working days. No vague language like "same as usual."</p>
+    </div>
+  </div>
+
+  <div class="provider-example glass-card">
+    <h4>Example Submission</h4>
+    <div class="provider-example-content">
+      <div class="provider-example-email">
+        <div class="provider-example-header">
+          <strong>To:</strong> Ashley@fountain.net<br>
+          <strong>Subject:</strong> Schedule - Week of March 17
+        </div>
+        <div class="provider-example-body">
+          Hi Ashley,<br><br>
+          Here's my schedule for the upcoming period:<br><br>
+          Mon 3/17: 9:00 AM – 5:00 PM<br>
+          Tue 3/18: 10:00 AM – 3:00 PM<br>
+          Wed 3/19: OFF<br>
+          Thu 3/20: 9:00 AM – 6:00 PM<br>
+          Fri 3/21: 9:00 AM – 1:00 PM<br><br>
+          Note: Taking half-day Friday for appointment.<br><br>
+          Thanks!
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN: ONGOING UPDATES -->
+<section id="admin" class="reveal" aria-labelledby="updates-heading">
+  <div class="section-header">
+    <span class="section-badge admin-badge">Admin Only</span>
+    <h2 id="updates-heading">System Administration</h2>
+    <p>How to manage the provider roster and keep the system up to date.</p>
+  </div>
+  <div class="updates-list">
+
+    <article class="update-item glass-card">
+      <div class="update-icon" style="background:var(--tag-green)" aria-hidden="true">&#10133;</div>
+      <div class="update-body">
+        <div class="update-title">Adding a new provider</div>
+        <div class="update-desc">When a new provider joins, add them to two places:</div>
+        <div class="update-steps">
+          <div class="update-step">Add their name and email to the <strong>Master Roster</strong> tab of the Google Sheet</div>
+          <div class="update-step">Add them to the <strong>providers array</strong> in app.js (the audit prompt and tables update automatically)</div>
+          <div class="update-step">Ensure they're on the <strong>Fountain Provider Schedules</strong> calendar</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="update-item glass-card">
+      <div class="update-icon" style="background:var(--tag-orange)" aria-hidden="true">&#10134;</div>
+      <div class="update-body">
+        <div class="update-title">Removing a departing provider</div>
+        <div class="update-desc">When a provider leaves, remove them cleanly:</div>
+        <div class="update-steps">
+          <div class="update-step">Remove from the <strong>Master Roster</strong> tab (or mark as inactive with a note)</div>
+          <div class="update-step">Remove from the <strong>providers array</strong> in app.js</div>
+          <div class="update-step">Archive their historical rows — do not delete, in case records are needed</div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- CHANGELOG -->
+<section id="changelog" class="changelog-section reveal" aria-labelledby="changelog-heading">
+  <div class="section-header">
+    <h2 id="changelog-heading">Changelog</h2>
+    <p>Track updates to this system as we progress through each phase.</p>
+  </div>
+
+  <div class="changelog-list">
+    <article class="changelog-item glass-card">
+      <div class="changelog-date">
+        <span class="changelog-version">v2.2</span>
+        <time datetime="2026-03-14">March 14, 2026</time>
+      </div>
+      <div class="changelog-content">
+        <h3>Usability & Tracking Features</h3>
+        <ul>
+          <li>Added interactive checklist for Phase 1 with local storage persistence</li>
+          <li>Added collapsible "How to Execute" sections for each phase</li>
+          <li>Added prerequisites checklist before roadmap</li>
+          <li>Added upcoming cycle calendar with deadlines</li>
+          <li>Added success metrics ("Definition of Done") for each phase</li>
+          <li>Added Changelog section to track updates</li>
+          <li>Added Contact & Support section with owner info</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="changelog-item glass-card">
+      <div class="changelog-date">
+        <span class="changelog-version">v2.1</span>
+        <time datetime="2026-03-14">March 14, 2026</time>
+      </div>
+      <div class="changelog-content">
+        <h3>Roadmap & Documentation</h3>
+        <ul>
+          <li>Added phased automation roadmap with 3 phases</li>
+          <li>Added step-by-step instructions for each phase</li>
+          <li>Replaced Google Sheet section with roadmap</li>
+          <li>Set 90% automation target by end of April</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="changelog-item glass-card">
+      <div class="changelog-date">
+        <span class="changelog-version">v2.0</span>
+        <time datetime="2026-03-10">March 10, 2026</time>
+      </div>
+      <div class="changelog-content">
+        <h3>Visual Refresh & Organization</h3>
+        <ul>
+          <li>Reorganized content from 12 sections to 9 consolidated sections</li>
+          <li>Added Quick Start TL;DR section</li>
+          <li>Added "For Providers" shareable section</li>
+          <li>Added visual enhancements: glassmorphism, particles, animations</li>
+          <li>Added dark/light theme toggle</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="changelog-item glass-card">
+      <div class="changelog-date">
+        <span class="changelog-version">v1.0</span>
+        <time datetime="2026-03-01">March 1, 2026</time>
+      </div>
+      <div class="changelog-content">
+        <h3>Initial Release</h3>
+        <ul>
+          <li>Core documentation for scheduling workflow</li>
+          <li>Gemini audit prompt for Gmail scanning</li>
+          <li>Email templates for reminders and escalations</li>
+          <li>Provider roster with search functionality</li>
+        </ul>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- CONTACT & OWNERSHIP -->
+<section id="contact" class="contact-section reveal" aria-labelledby="contact-heading">
+  <div class="section-header">
+    <h2 id="contact-heading">Questions & Support</h2>
+    <p>Who to contact for help with this system.</p>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-card glass-card">
+      <div class="contact-icon">&#128100;</div>
+      <h3>System Owner</h3>
+      <p class="contact-name">Ashley</p>
+      <p class="contact-email"><a href="mailto:Ashley@fountain.net">Ashley@fountain.net</a></p>
+      <p class="contact-desc">Primary contact for scheduling operations, process questions, and provider issues.</p>
+    </div>
+
+    <div class="contact-card glass-card">
+      <div class="contact-icon">&#128736;</div>
+      <h3>Technical Support</h3>
+      <p class="contact-name">Daniel</p>
+      <p class="contact-email"><a href="mailto:daniel@fountain.net">daniel@fountain.net</a></p>
+      <p class="contact-desc">For automation bugs, website issues, or technical improvements.</p>
+    </div>
+
+    <div class="contact-card glass-card">
+      <div class="contact-icon">&#128101;</div>
+      <h3>Escalations</h3>
+      <p class="contact-name">Lindsay</p>
+      <p class="contact-email"><a href="mailto:lindsay@fountain.net">lindsay@fountain.net</a></p>
+      <p class="contact-desc">CC'd on escalation emails. Contact for unresponsive providers or policy questions.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer role="contentinfo">
+  <div class="footer-content">
+    <span>Built for Fountain internal scheduling operations</span>
+    <span class="footer-divider">·</span>
+    <span id="footerProviderCount">18 providers tracked</span>
+    <span class="footer-divider">·</span>
+    <span>14-day audit window</span>
+  </div>
+  <div class="footer-meta">
+    <span>v2.2</span>
+    <span class="footer-divider">·</span>
+    <span>Last updated: <time datetime="2026-03-14">March 14, 2026</time></span>
+  </div>
+</footer>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container" role="alert" aria-live="polite"></div>
+
+<!-- Back to Top Button -->
+<button id="backToTop" class="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+<!-- Keyboard Shortcuts Modal -->
+<div class="shortcuts-modal" id="shortcutsModal" role="dialog" aria-labelledby="shortcutsTitle" aria-modal="true">
+  <div class="shortcuts-content glass-card">
+    <div class="shortcuts-header">
+      <h3 id="shortcutsTitle">Keyboard Shortcuts</h3>
+      <button class="shortcuts-close" id="shortcutsClose" aria-label="Close shortcuts modal">&times;</button>
+    </div>
+    <div class="shortcuts-body">
+      <div class="shortcut-group">
+        <div class="shortcut-group-title">Navigation</div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>1</kbd></span>
+          <span class="shortcut-desc">Go to Workflow</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>2</kbd></span>
+          <span class="shortcut-desc">Go to Audit Prompt</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>3</kbd></span>
+          <span class="shortcut-desc">Go to Providers</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>4</kbd></span>
+          <span class="shortcut-desc">Go to Templates</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>5</kbd></span>
+          <span class="shortcut-desc">Go to Sheet</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>6</kbd></span>
+          <span class="shortcut-desc">Go to Tasks</span>
+        </div>
+      </div>
+      <div class="shortcut-group">
+        <div class="shortcut-group-title">Actions</div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>T</kbd></span>
+          <span class="shortcut-desc">Toggle dark/light theme</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>/</kbd></span>
+          <span class="shortcut-desc">Focus search</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>G</kbd></span>
+          <span class="shortcut-desc">Go to top</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>?</kbd></span>
+          <span class="shortcut-desc">Show this help</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-keys"><kbd>Esc</kbd></span>
+          <span class="shortcut-desc">Close modal</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Keyboard Shortcut Hint -->
+<div class="shortcut-hint" id="shortcutHint">
+  Press <kbd>?</kbd> for keyboard shortcuts
+</div>
+
+<!-- JavaScript -->
+<script src="app.js"></script>
+</body>
+</html>
